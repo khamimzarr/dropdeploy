@@ -1,6 +1,6 @@
 import { Rocket, Lock } from "lucide-react";
 
-/** Confetti — decorative blobs with float animation. */
+/** Confetti — decorative blobs with float + drift + scale pulse. */
 export function Confetti() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -10,14 +10,16 @@ export function Confetti() {
       <div className="animate-float absolute top-[30%] -right-10 size-44 rounded-[24px] bg-periwinkle-violet/60" />
       <div className="animate-float-alt absolute bottom-[-40px] left-1/3 size-36 rounded-full bg-sticker-yellow/60" />
       <div className="animate-float-slow absolute top-1/2 right-1/4 size-24 rounded-full bg-sticker-green/60" />
+      <div className="animate-drift absolute top-[18%] left-[28%] size-20 rounded-full bg-sticker-pink/40 blur-[0.5px]" />
+      <div className="animate-drift-alt absolute bottom-[22%] right-[18%] size-14 rounded-[16px] bg-periwinkle-violet/30" />
     </div>
   );
 }
 
 export function Logo() {
   return (
-    <div className="flex items-center gap-2">
-      <span className="grid size-8 place-items-center rounded-full bg-carbon text-paper-white shadow-sticker">
+    <div className="group flex items-center gap-2">
+      <span className="grid size-8 place-items-center rounded-full bg-carbon text-paper-white shadow-sticker transition-transform duration-300 group-hover:rotate-[12deg] group-hover:scale-110">
         <Rocket size={16} strokeWidth={2.5} />
       </span>
       <span className="text-[16px] font-medium tracking-tight">DropDeploy</span>
@@ -27,7 +29,7 @@ export function Logo() {
 
 export function NavPill() {
   return (
-    <nav className="animate-fade-in sticky top-4 z-40 mx-auto mt-4 flex w-fit items-center gap-8 rounded-full bg-lavender-mist px-4 py-2 shadow-sticker">
+    <nav className="animate-fade-in sticky top-4 z-40 mx-auto mt-4 flex w-fit items-center gap-6 rounded-full bg-lavender-mist px-5 py-2.5 shadow-sticker backdrop-blur-sm">
       <Logo />
       <div className="hidden items-center gap-1 sm:flex">
         {[
@@ -38,15 +40,12 @@ export function NavPill() {
           <a
             key={l.href}
             href={l.href}
-            className="rounded-full px-3 py-1 text-[16px] font-medium hover:bg-paper-white/80"
+            className="nav-link relative rounded-full px-3 py-1 text-[16px] font-medium transition-colors hover:bg-paper-white/80"
           >
             {l.label}
           </a>
         ))}
       </div>
-      <span className="rounded-full bg-carbon px-3 py-1 text-[14px] font-medium text-paper-white shadow-sticker">
-        v1.0
-      </span>
     </nav>
   );
 }
@@ -54,13 +53,13 @@ export function NavPill() {
 export function StatusBadge({ ready }: { ready: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[14px] font-medium ${
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[14px] font-medium transition-colors ${
         ready ? "bg-mint-cream text-carbon" : "bg-fog text-graphite"
       }`}
     >
       <span
         className={`size-2 rounded-full ${
-          ready ? "bg-sticker-green" : "bg-graphite"
+          ready ? "bg-sticker-green animate-pulse-soft" : "bg-graphite"
         }`}
       />
       {ready ? "Siap deploy" : "Belum siap"}

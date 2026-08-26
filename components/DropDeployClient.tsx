@@ -110,52 +110,63 @@ export default function DropDeployClient() {
     multiple: false,
   });
 
-  // ---- Actions ----
-  const handleDeployVercel = async () => {
+  // ---- Satu tombol — deploy ke Vercel & GitHub sekaligus ----
+  const handleDeployAll = async () => {
     if (!isReady || !entries.length) return;
+    const ghToken = session?.accessToken;
     setStatusState("deploying");
-    setMessage("Mendeploy ke Vercel …");
     setResult(null);
-    try {
-      const r = await deployToVercel(vercelToken, repoName || "dropdeploy", entries);
-      setResult((prev) => ({
-        ...(prev ?? {}),
-        vercelUrl: r.alias || r.url,
-        vercelId: r.id,
-        fileCount: entries.length,
-      }));
-      setStatusState("success");
-      setMessage("Deploy Vercel berhasil!");
-    } catch (e: any) {
-      setStatusState("error");
-      setMessage(e?.message || "Deploy Vercel gagal.");
+    setMessage("Deploy ke Vercel & GitHub…");
+    let vercelUrl: string | undefined;
+    let vercelId: string | undefined;
+    let githubUrl: string | undefined;
+    let vercelErr: string | undefined;
+    let githubErr: string | undefined;
+    const name = repoName || "dropdeploy";
+    const tasks: Promise<void>[] = [];
+    tasks.push(
+      deployToVercel(vercelToken, name, entries)
+        .then((r) => {
+          vercelUrl = r.alias || r.url;
+          vercelId = r.id;
+        })
+        .catch((e: any) => {
+          vercelErr = e?.message || "Deploy Vercel gagal.";
+        })
+    );
+    if (ghToken) {
+      tasks.push(
+        publishToGitHub(ghToken, name, entries)
+          .then((r) => {
+            githubUrl = r.htmlUrl;
+          })
+          .catch((e: any) => {
+            githubErr = e?.message || "Publish GitHub gagal.";
+          })
+      );
     }
-  };
-
-  const handlePublishGitHub = async () => {
-    if (!isLoggedIn || !entries.length) return;
-    const token = session?.accessToken;
-    if (!token) {
-      setStatusState("error");
-      setMessage("Sesi GitHub tidak valid. Silakan login ulang.");
-      return;
-    }
-    setStatusState("deploying");
-    setMessage("Publishing ke GitHub …");
-    setResult(null);
-    try {
-      const r = await publishToGitHub(token, repoName || "dropdeploy", entries);
-      setResult((prev) => ({
-        ...(prev ?? {}),
-        githubUrl: r.htmlUrl,
-        githubRepo: repoName || "dropdeploy",
+    await Promise.all(tasks);
+    if (vercelUrl || githubUrl) {
+      setResult({
+        vercelUrl,
+        vercelId,
+        githubUrl,
+        githubRepo: githubUrl ? name : undefined,
         fileCount: entries.length,
-      }));
+      });
+    }
+    if (vercelUrl && githubUrl) {
       setStatusState("success");
-      setMessage("Repo GitHub berhasil dibuat!");
-    } catch (e: any) {
+      setMessage("Berhasil — Vercel & GitHub live!");
+    } else if (vercelUrl && githubErr) {
+      setStatusState("success");
+      setMessage(`Vercel berhasil — GitHub: ${githubErr}`);
+    } else if (githubUrl && vercelErr) {
+      setStatusState("success");
+      setMessage(`GitHub berhasil — Vercel: ${vercelErr}`);
+    } else {
       setStatusState("error");
-      setMessage(e?.message || "Publish GitHub gagal.");
+      setMessage(vercelErr || githubErr || "Deploy gagal.");
     }
   };
 
@@ -340,12 +351,13 @@ export default function DropDeployClient() {
               {isReady && entries.length > 0 && (
                 <div className="mx-auto mb-3 flex -space-x-1.5">
                   {imageEntries.length > 0 ? (
-                    imageEntries.map((img) => (
+                    imageEntries.map((img, i) => (
                       <img
                         key={img.path}
                         src={`data:image/*;base64,${img.data}`}
                         alt=""
-                        className="size-9 rounded-full border-2 border-paper-white object-cover"
+                        className={`size-9 rounded-full border-2 border-paper-white object-cover animate-float ${i === 1 ? "animate-float-alt" : ""} ${i === 2 ? "animate-float-slow" : ""}`}
+                        style={{ animationDelay: `${i * 120}ms` }}
                       />
                     ))
                   ) : (
@@ -438,30 +450,20 @@ export default function DropDeployClient() {
               </div>
             )}
 
-            {/* Action buttons */}
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                onClick={handleDeployVercel}
-                disabled={!isReady || !entries.length || statusState === "deploying"}
-                className="flex flex-1 items-center justify-center gap-2 rounded-full bg-carbon px-6 py-3.5 text-[16px] font-medium text-paper-white shadow-sticker transition
-                  enabled:hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <Rocket size={18} />
-                Deploy ke Vercel
-              </button>
-              <button
-                onClick={handlePublishGitHub}
-                disabled={
-                  !isLoggedIn || !entries.length || statusState === "deploying"
-                }
-                className="flex flex-1 items-center justify-center gap-2 rounded-full border border-carbon bg-paper-white px-6 py-3.5 text-[16px] font-medium shadow-sticker transition
-                  enabled:hover:bg-carbon enabled:hover:text-paper-white disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <Github size={18} />
-                Publish ke GitHub
-                {!isLoggedIn && <Lock size={13} />}
-              </button>
-            </div>
+            {/* Action: 1 tombol 2 fungsi */}
+            <button
+              onClick={handleDeployAll}
+              disabled={!isReady || !entries.length || statusState === "deploying"}
+              className="btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-carbon px-6 py-3.5 text-[16px] font-medium text-paper-white shadow-sticker transition
+                enabled:hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {statusState === "deploying" ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                <Rocket size={18} className="group-hover:animate-[iconBounce_0.6s_ease]" />
+              )}
+              Deploy ke Vercel & GitHub
+            </button>
           </div>
         </div>
       </section>
