@@ -17,6 +17,7 @@ import {
   LogOut,
   Lock,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
 import { Confetti, NavPill } from "./ui";
 import { readZip, nameFromZip, type ZipEntry } from "@/lib/deploy";
@@ -275,9 +276,15 @@ export default function DropDeployClient() {
                     autoComplete="off"
                   />
                 </div>
-                <p className="text-[12px] leading-snug text-graphite">
+                <a
+                  href="https://vercel.com/account/tokens"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[12px] leading-snug text-graphite underline decoration-dotted underline-offset-2 hover:text-carbon"
+                >
                   Buat di Vercel → Settings → Tokens. Grants: deployment.
-                </p>
+                  <ExternalLink size={12} className="shrink-0" />
+                </a>
               </div>
             </div>
 
