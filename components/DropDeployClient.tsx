@@ -112,7 +112,7 @@ export default function DropDeployClient() {
     const file = accepted[0];
     if (!file) return;
     setStatusState("reading");
-    setMessage(`Membaca ${file.name} …`);
+    setMessage("Membongkar muatan...");
     setResult(null);
     setSrcFile(file);
     try {
@@ -144,13 +144,20 @@ export default function DropDeployClient() {
     const ghToken = session?.accessToken;
     setStatusState("deploying");
     setResult(null);
-    setMessage("Deploy ke Vercel & GitHub…");
+    setMessage("Menyiapkan panggung...");
     let vercelUrl: string | undefined;
     let vercelId: string | undefined;
     let githubUrl: string | undefined;
     let vercelErr: string | undefined;
     let githubErr: string | undefined;
+    let vercelDone = false;
+    let githubDone = false;
     const name = repoName || "dropdeploy";
+    const updatePhase = () => {
+      // Vercel & GitHub berjalan paralel — tampilkan fase yang masih aktif
+      if (vercelDone && !githubDone) setMessage("Mengamankan kode...");
+      else if (githubDone && !vercelDone) setMessage("Menyiapkan panggung...");
+    };
     const tasks: Promise<void>[] = [];
     tasks.push(
       deployToVercel(vercelToken, name, entries)
@@ -161,6 +168,10 @@ export default function DropDeployClient() {
         .catch((e: any) => {
           vercelErr = e?.message || "Deploy Vercel gagal.";
         })
+        .finally(() => {
+          vercelDone = true;
+          updatePhase();
+        })
     );
     if (ghToken) {
       tasks.push(
@@ -170,6 +181,10 @@ export default function DropDeployClient() {
           })
           .catch((e: any) => {
             githubErr = e?.message || "Publish GitHub gagal.";
+          })
+          .finally(() => {
+            githubDone = true;
+            updatePhase();
           })
       );
     }
@@ -185,7 +200,7 @@ export default function DropDeployClient() {
     }
     if (vercelUrl && githubUrl) {
       setStatusState("success");
-      setMessage("Berhasil — Vercel & GitHub live!");
+      setMessage("Misi sukses. Kode mendarat di GitHub dan mengudara di Vercel.");
     } else if (vercelUrl && githubErr) {
       setStatusState("success");
       setMessage(`Vercel berhasil — GitHub: ${githubErr}`);
@@ -240,9 +255,9 @@ export default function DropDeployClient() {
           Instant Deploy dari browser
         </p>
         <h1 className="animate-fade-up delay-100 max-w-4xl text-[48px] font-medium leading-[1.1] tracking-[-0.01em] sm:text-[60px] md:text-[72px]">
-          Seret <span className="text-periwinkle-violet">.zip</span> kamu.
+          Tarik, Lepas, <span className="text-periwinkle-violet">Deploy</span>.
           <br />
-          Langsung <span className="text-sticker-green">online</span>.
+          Semudah <span className="text-sticker-green">itu</span>.
         </h1>
         <p className="animate-fade-up delay-200 mt-6 max-w-[640px] text-[16px] leading-relaxed text-slate">
           <code className="font-geist-mono text-[14px]">.zip</code> → <strong>Vercel</strong> & <strong>GitHub</strong> langsung dari browser. 90% client-side — backend hanya NextAuth.
