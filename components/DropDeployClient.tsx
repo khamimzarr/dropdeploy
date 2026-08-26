@@ -217,7 +217,7 @@ export default function DropDeployClient() {
           Langsung <span className="text-sticker-green">online</span>.
         </h1>
         <p className="animate-fade-up delay-200 mt-6 max-w-[640px] text-[16px] leading-relaxed text-slate">
-          <code className="font-geist-mono text-[14px]">.zip</code> → <strong>Vercel</strong> & <strong>GitHub</strong> langsung dari browser. 100% client-side.
+          <code className="font-geist-mono text-[14px]">.zip</code> → <strong>Vercel</strong> & <strong>GitHub</strong> langsung dari browser. 90% client-side — backend hanya NextAuth.
         </p>
       </section>
 
