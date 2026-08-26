@@ -653,8 +653,8 @@ function ResultRow({
 }) {
   const full = url.startsWith("http") ? url : `https://${url}`;
   return (
-    <div className="flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-3 shadow-sticker-sm">
-      <div className="flex min-w-0 items-center gap-2">
+    <div className="flex min-w-0 items-center justify-between gap-3 rounded-[16px] bg-paper-white p-3 shadow-sticker-sm">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <span className="grid size-8 shrink-0 place-items-center rounded-full bg-carbon text-paper-white">
           {label === "Vercel" ? <Rocket size={15} /> : <Github size={15} />}
         </span>
@@ -662,7 +662,8 @@ function ResultRow({
           href={full}
           target="_blank"
           rel="noopener noreferrer"
-          className="truncate font-geist-mono text-[14px] underline decoration-dotted underline-offset-4 hover:text-periwinkle-violet"
+          className="min-w-0 flex-1 truncate font-geist-mono text-[14px] underline decoration-dotted underline-offset-4 hover:text-periwinkle-violet"
+          title={full}
         >
           {url}
         </a>
