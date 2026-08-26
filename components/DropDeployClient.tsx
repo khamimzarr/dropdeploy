@@ -268,37 +268,37 @@ export default function DropDeployClient() {
       <section id="deploy" className="reveal relative mx-auto max-w-[1200px] scroll-mt-20 px-6 pb-24">
         <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
           {/* ---- Left: connection panel ---- */}
-          <aside className="flex flex-col gap-4">
+          <aside className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:items-start lg:flex lg:flex-col">
             {/* GitHub auth card */}
-            <div className="card-lift reveal rounded-[24px] bg-lavender-mist p-6">
-              <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
-                <Github size={20} /> Akun GitHub
+            <div className="card-lift reveal rounded-[24px] bg-lavender-mist p-5 sm:p-6">
+              <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
+                <Github size={18} className="sm:size-5" /> Akun GitHub
               </h3>
-              <p className="mb-4 text-[14px] leading-relaxed text-slate">
-                Masuk dengan akun GitHub supaya file kamu langsung ter-publish ke repo milikmu.
+              <p className="mb-3 text-[13px] leading-relaxed text-slate sm:mb-4 sm:text-[14px]">
+                Supaya file kamu langsung ter-publish ke repo milikmu.
               </p>
               {isLoggedIn ? (
-                <div className="flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-3 shadow-sticker-sm">
+                <div className="flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-2.5 shadow-sticker-sm sm:p-3">
                   <div className="flex min-w-0 items-center gap-2">
                     {session?.user?.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={session.user.image}
                         alt="avatar"
-                        className="size-8 rounded-full"
+                        className="size-8 shrink-0 rounded-full"
                       />
                     ) : (
-                      <span className="grid size-8 place-items-center rounded-full bg-carbon text-paper-white">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-carbon text-paper-white">
                         <Github size={16} />
                       </span>
                     )}
-                    <span className="truncate text-[15px] font-medium">
+                    <span className="truncate text-[14px] font-medium sm:text-[15px]">
                       {session?.user?.name || "Terhubung"}
                     </span>
                   </div>
                   <button
                     onClick={() => signOut()}
-                    className="flex items-center gap-1 rounded-full border border-carbon px-3 py-1 text-[13px] font-medium hover:bg-carbon hover:text-paper-white"
+                    className="flex shrink-0 items-center gap-1 rounded-full border border-carbon px-3 py-1 text-[13px] font-medium hover:bg-carbon hover:text-paper-white"
                   >
                     <LogOut size={13} /> Keluar
                   </button>
@@ -306,7 +306,7 @@ export default function DropDeployClient() {
               ) : (
                 <div className="rounded-[16px] bg-paper-white p-3 shadow-sticker-sm">
                   <p className="mb-2 text-[13px] text-graphite">
-                    {status === "loading" ? "Memeriksa sesi …" : "Belum login."}
+                    {status === "loading" ? "Memeriksa sesi ..." : "Belum login."}
                   </p>
                   <button
                     onClick={() => signIn("github")}
@@ -320,12 +320,12 @@ export default function DropDeployClient() {
             </div>
 
             {/* Vercel BYOK token card */}
-            <div className="card-lift reveal delay-100 rounded-[24px] bg-butter-cream p-6">
-              <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
-                <KeyRound size={20} /> Vercel Token
+            <div className="card-lift reveal delay-100 rounded-[24px] bg-butter-cream p-5 sm:p-6">
+              <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
+                <KeyRound size={18} className="sm:size-5" /> Vercel Token
               </h3>
-              <p className="mb-4 text-[14px] leading-relaxed text-slate">
-                Tempel token Vercel milikmu di sini. Token ini hanya disimpan di browser kamu dan tidak pernah ke server DropDeploy.
+              <p className="mb-3 text-[13px] leading-relaxed text-slate sm:mb-4 sm:text-[14px]">
+                Tempel token Vercel milikmu di sini. Disimpan hanya di browser, tidak pernah ke server DropDeploy.
               </p>
               <div className="flex flex-col gap-2">
                 <div
@@ -383,11 +383,11 @@ export default function DropDeployClient() {
             </div>
 
             {/* Repo / project name */}
-            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-6">
-              <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
-                <FolderArchive size={20} /> Nama Projek
+            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
+              <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
+                <FolderArchive size={18} className="sm:size-5" /> Nama Projek
               </h3>
-              <p className="mb-4 text-[14px] leading-relaxed text-slate">
+              <p className="mb-3 text-[13px] leading-relaxed text-slate sm:mb-4 sm:text-[14px]">
                 Diambil dari nama ZIP. Bisa diedit.
               </p>
               <input
