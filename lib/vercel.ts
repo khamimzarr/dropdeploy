@@ -41,11 +41,8 @@ export async function deployToVercel(
     files: uploads,
     projectSettings: {
       framework: null,
-      buildCommand: undefined,
-      // dockerfile detected at runtime in caller
     },
     target: "production",
-    forceNew: 1,
   };
 
   const res = await fetch(VERCEL_API, {
