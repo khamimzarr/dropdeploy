@@ -34,6 +34,8 @@ interface Result {
   fileCount: number;
 }
 
+type TokenState = "empty" | "checking" | "valid" | "invalid";
+
 const STORAGE_KEY = "dropdeploy_vercel_token";
 
 export default function DropDeployClient() {
@@ -46,6 +48,7 @@ export default function DropDeployClient() {
   const [srcFile, setSrcFile] = useState<File | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [tokenState, setTokenState] = useState<TokenState>("empty");
 
   // Load stored Vercel token on mount (BYOK — stored locally, never backend).
   useEffect(() => {
@@ -68,16 +71,41 @@ export default function DropDeployClient() {
   }, []);
 
   const isLoggedIn = status === "authenticated";
-  const isReady = isLoggedIn && vercelToken.trim().length > 0;
+  const isTokenValid = tokenState === "valid";
+  const isReady = isLoggedIn && isTokenValid;
 
   const saveToken = (value: string) => {
     setVercelToken(value);
-    if (value.trim()) {
-      window.localStorage.setItem(STORAGE_KEY, value.trim());
+    const t = value.trim();
+    if (t) {
+      window.localStorage.setItem(STORAGE_KEY, t);
     } else {
       window.localStorage.removeItem(STORAGE_KEY);
     }
+    // reset state — debounce check akan jalan
+    if (!t) setTokenState("empty");
+    else setTokenState("checking");
   };
+
+  // Validate token live against Vercel API (BYOK — client-side, token never hits our backend)
+  useEffect(() => {
+    const t = vercelToken.trim();
+    if (!t) {
+      setTokenState("empty");
+      return;
+    }
+    const id = setTimeout(async () => {
+      try {
+        const res = await fetch("https://api.vercel.com/v2/user", {
+          headers: { Authorization: `Bearer ${t}` },
+        });
+        setTokenState(res.ok ? "valid" : "invalid");
+      } catch {
+        setTokenState("invalid");
+      }
+    }, 450);
+    return () => clearTimeout(id);
+  }, [vercelToken]);
 
   // ---- DropZone ----
   const onDrop = useCallback(async (accepted: File[]) => {
@@ -286,7 +314,15 @@ export default function DropDeployClient() {
                 <code className="font-geist-mono text-[13px]">localStorage</code>, tidak ke server.
               </p>
               <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 rounded-[16px] bg-paper-white px-3 py-2 shadow-sticker-sm">
+                <div
+                  className={`flex items-center gap-2 rounded-[16px] bg-paper-white px-3 py-2 shadow-sticker-sm transition-colors ${
+                    tokenState === "valid"
+                      ? "ring-2 ring-sticker-green"
+                      : tokenState === "invalid"
+                      ? "ring-2 ring-sticker-pink"
+                      : ""
+                  }`}
+                >
                   <Lock size={14} className="shrink-0 text-graphite" />
                   <input
                     type="password"
@@ -296,14 +332,37 @@ export default function DropDeployClient() {
                     className="w-full bg-transparent font-geist-mono text-[14px] outline-none placeholder:text-ash"
                     autoComplete="off"
                   />
+                  {tokenState === "checking" && (
+                    <Loader2 size={16} className="shrink-0 animate-spin text-graphite" />
+                  )}
+                  {tokenState === "valid" && (
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-mint-cream animate-scale-in" title="Token valid">
+                      <CheckCircle2 size={15} className="text-sticker-green" />
+                    </span>
+                  )}
+                  {tokenState === "invalid" && (
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-cotton-candy animate-scale-in" title="Token tidak valid">
+                      <XCircle size={15} className="text-sticker-pink" />
+                    </span>
+                  )}
                 </div>
+                {tokenState === "valid" && (
+                  <p className="flex items-center gap-1 text-[12px] font-medium text-sticker-green">
+                    <CheckCircle2 size={12} /> Token valid
+                  </p>
+                )}
+                {tokenState === "invalid" && (
+                  <p className="flex items-center gap-1 text-[12px] font-medium text-[#e8477a]">
+                    <XCircle size={12} /> Token tidak valid — cek kembali
+                  </p>
+                )}
                 <a
                   href="https://vercel.com/account/tokens"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[12px] leading-snug text-graphite underline decoration-dotted underline-offset-2 hover:text-carbon"
                 >
-                  Buat di Vercel → Settings → Tokens. Grants: deployment.
+                  Klik untuk generate tokens
                   <ExternalLink size={12} className="shrink-0" />
                 </a>
               </div>
