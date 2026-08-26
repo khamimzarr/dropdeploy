@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "DropDeploy — Instant Deploy .zip ke Vercel & GitHub",
   description:
-    "Seret & lepas arsip .zip lalu deploy ke Vercel & GitHub — 90% client-side, backend hanya NextAuth. Token BYOK di localStorage.",
+    "Seret & lepas arsip .zip, lalu langsung deploy ke Vercel & GitHub.",
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.png",
