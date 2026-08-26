@@ -53,6 +53,20 @@ export default function DropDeployClient() {
     if (stored) setVercelToken(stored);
   }, []);
 
+  // Reveal on scroll
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("is-visible");
+        }),
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   const isLoggedIn = status === "authenticated";
   const isReady = isLoggedIn && vercelToken.trim().length > 0;
 
@@ -182,35 +196,32 @@ export default function DropDeployClient() {
 
       {/* ================= HERO ================= */}
       <section className="relative mx-auto flex max-w-[1200px] flex-col items-center px-6 pb-16 pt-20 text-center">
-        <p className="mb-4 rounded-full bg-lavender-mist px-4 py-1 text-[14px] font-medium text-slate shadow-sticker">
+        <p className="animate-fade-up mb-4 rounded-full bg-lavender-mist px-4 py-1 text-[14px] font-medium text-slate shadow-sticker">
           <Sparkles size={13} className="mr-1 inline" />
           Instant Deploy dari browser
         </p>
-        <h1 className="max-w-4xl text-[48px] font-medium leading-[1.1] tracking-[-0.01em] sm:text-[60px] md:text-[72px]">
+        <h1 className="animate-fade-up delay-100 max-w-4xl text-[48px] font-medium leading-[1.1] tracking-[-0.01em] sm:text-[60px] md:text-[72px]">
           Seret <span className="text-periwinkle-violet">.zip</span> kamu.
           <br />
           Langsung <span className="text-sticker-green">online</span>.
         </h1>
-        <p className="mt-6 max-w-[640px] text-[16px] leading-relaxed text-slate">
-          DropDeploy mengunggah arsip <code className="font-geist-mono text-[14px]">.zip</code>{" "}
-          lalu deploy ke <strong>Vercel</strong> dan publish ke <strong>GitHub</strong> —
-          100% dari browser, tanpa server. Token simpan lokal hanya di perangkatmu.
+        <p className="animate-fade-up delay-200 mt-6 max-w-[640px] text-[16px] leading-relaxed text-slate">
+          <code className="font-geist-mono text-[14px]">.zip</code> → <strong>Vercel</strong> & <strong>GitHub</strong> langsung dari browser. 100% client-side.
         </p>
       </section>
 
       {/* ================= DEPLOY ================= */}
-      <section id="deploy" className="relative mx-auto max-w-[1200px] scroll-mt-20 px-6 pb-24">
+      <section id="deploy" className="reveal relative mx-auto max-w-[1200px] scroll-mt-20 px-6 pb-24">
         <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
           {/* ---- Left: connection panel ---- */}
           <aside className="flex flex-col gap-4">
             {/* GitHub auth card */}
-            <div className="rounded-[24px] bg-lavender-mist p-6">
+            <div className="card-lift reveal rounded-[24px] bg-lavender-mist p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
                 <Github size={20} /> Akun GitHub
               </h3>
               <p className="mb-4 text-[14px] leading-relaxed text-slate">
-                Login untuk mengaktifkan publish repo. Kredensial dikelola OAuth oleh
-                NextAuth — token tidak pernah menyentuh backend selain NextAuth.
+                Login untuk publish repo ke akunmu. OAuth via NextAuth.
               </p>
               {isLoggedIn ? (
                 <div className="flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-3 shadow-sticker-sm">
@@ -255,14 +266,13 @@ export default function DropDeployClient() {
             </div>
 
             {/* Vercel BYOK token card */}
-            <div className="rounded-[24px] bg-butter-cream p-6">
+            <div className="card-lift reveal delay-100 rounded-[24px] bg-butter-cream p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
                 <KeyRound size={20} /> Vercel Token
               </h3>
               <p className="mb-4 text-[14px] leading-relaxed text-slate">
-                Tempel token personal Vercel (BYOK). Disimpan di{" "}
-                <code className="font-geist-mono text-[13px]">localStorage</code> —
-                tidak pernah dikirim ke server DropDeploy.
+                Token personal Vercel (BYOK) → simpan di{" "}
+                <code className="font-geist-mono text-[13px]">localStorage</code>, tidak ke server.
               </p>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 rounded-[16px] bg-paper-white px-3 py-2 shadow-sticker-sm">
@@ -289,12 +299,12 @@ export default function DropDeployClient() {
             </div>
 
             {/* Repo / project name */}
-            <div className="rounded-[24px] bg-mint-cream p-6">
+            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[20px] font-medium">
                 <FolderArchive size={20} /> Nama Projek
               </h3>
               <p className="mb-4 text-[14px] leading-relaxed text-slate">
-                Default diambil dari nama file ZIP. Bisa diedit sebelum deploy.
+                Diambil dari nama ZIP. Bisa diedit.
               </p>
               <input
                 type="text"
@@ -307,7 +317,7 @@ export default function DropDeployClient() {
           </aside>
 
           {/* ---- Right: dropzone + progress ---- */}
-          <div className="flex flex-col gap-5">
+          <div className="reveal delay-100 flex flex-col gap-5">
             {/* Dropzone */}
             <div
               {...getRootProps()}
@@ -357,8 +367,8 @@ export default function DropDeployClient() {
               </p>
               <p className="mx-auto mt-2 max-w-sm text-[14px] leading-relaxed text-graphite">
                 {isReady
-                  ? "Klik area atau seret arsip. Script diproses di browser via JSZip sebelum deploy."
-                  : "Login GitHub & isi Vercel Token untuk membuka area drop."}
+                  ? "Klik atau seret arsip."
+                  : "Login GitHub & isi Vercel Token untuk membuka drop zone."}
               </p>
 
               {isReady && !entries.length && (
@@ -374,7 +384,7 @@ export default function DropDeployClient() {
 
             {/* Progress / status strip */}
             {(statusState !== "idle" || entries.length > 0) && (
-              <div className={`rounded-[24px] p-6 ${statusColor} transition`}>
+              <div className={`animate-scale-in rounded-[24px] p-6 ${statusColor} transition`}>
                 {(statusState === "deploying" || statusState === "reading") && (
                   <div className="flex items-center gap-3">
                     <Loader2 className="size-5 animate-spin text-carbon" />
@@ -457,7 +467,7 @@ export default function DropDeployClient() {
       </section>
 
       {/* ================= HOW IT WORKS (dark band) ================= */}
-      <section className="bg-deep-aubergine px-6 py-24 text-paper-white">
+      <section id="cara" className="reveal bg-deep-aubergine px-6 py-24 text-paper-white">
         <div className="mx-auto max-w-[1200px]">
           <h2 className="text-center text-[40px] font-medium tracking-[-0.01em] sm:text-[60px]">
             Cara Kerja
@@ -467,25 +477,25 @@ export default function DropDeployClient() {
               {
                 n: "01",
                 t: "Siapkan Akses",
-                d: "Login GitHub (OAuth NextAuth) + tempel Vercel Token. Keduanya hanya dipakai di browser kamu.",
+                d: "Login GitHub + tempel Vercel Token — semua di browser.",
                 icon: <Github size={22} />,
               },
               {
                 n: "02",
                 t: "Seret .zip",
-                d: "JSZip mengekstrak isi arsip di memori. Teks & aset gambar dikonversi jadi array base64 untuk payload Vercel.",
+                d: "JSZip ekstrak di memori, base64 untuk payload Vercel.",
                 icon: <UploadCloud size={22} />,
               },
               {
                 n: "03",
                 t: "Deploy Langsung",
-                d: "fetch POST dari browser ke api.vercel.com/v13/deployments atau api.github.com. Langsung dapat link production.",
+                d: "fetch ke api.vercel.com & api.github.com — langsung dapat link.",
                 icon: <Rocket size={22} />,
               },
             ].map((s) => (
               <div
                 key={s.n}
-                className="rounded-[24px] bg-carbon p-8 shadow-sticker-sm"
+                className="card-lift rounded-[24px] bg-carbon p-8 shadow-sticker-sm"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <span className="grid size-11 place-items-center rounded-full bg-periwinkle-violet/70 text-paper-white">
@@ -504,7 +514,7 @@ export default function DropDeployClient() {
       </section>
 
       {/* ================= FAQ (periwinkle band) ================= */}
-      <section id="faq" className="bg-periwinkle-violet px-6 py-24 text-carbon">
+      <section id="faq" className="reveal bg-periwinkle-violet px-6 py-24 text-carbon">
         <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-[320px_1fr]">
           <div>
             <p className="mb-2 text-[14px] font-medium">FAQ</p>
@@ -512,26 +522,26 @@ export default function DropDeployClient() {
               Ada yang perlu ditanya?
             </h2>
             <p className="mt-4 max-w-xs text-[16px] leading-relaxed">
-              Jawaban cepat soal keamanan, token, dan cara kerja DropDeploy.
+              Jawaban cepat soal keamanan & cara kerja.
             </p>
           </div>
           <div className="flex flex-col gap-4">
             {[
               {
-                q: "Apakah token saya dikirim ke server DropDeploy?",
-                a: "Tidak. Vercel Token hanya disimpan di localStorage browser dan dikirim langsung ke api.vercel.com. DropDeploy tidak punya backend untuk memproses token atau file ZIP.",
+                q: "Apakah token dikirim ke server DropDeploy?",
+                a: "Tidak. Token simpan di localStorage & dikirim langsung ke api.vercel.com.",
               },
               {
-                q: "Login GitHub itu untuk apa?",
-                a: "Untuk publish repo ke akun GitHub kamu sendiri (BYOK). Proses OAuth lewat NextAuth — satu-satunya backend di aplikasi ini.",
+                q: "Login GitHub untuk apa?",
+                a: "Publish repo ke akunmu (BYOK) — satu-satunya backend adalah NextAuth.",
               },
               {
-                q: "Berapa ukuran ZIP maksimal?",
-                a: "Proses sepenuhnya client-side, jadi tidak kena limit payload 4.5MB backend Vercel. Batas tergantung memori browser & kuota deployment akunmu.",
+                q: "Ukuran ZIP maksimal?",
+                a: "Client-side, jadi bebas limit 4.5MB backend. Batas ikut memori browser & kuota akunmu.",
               },
               {
-                q: "File apa saja yang didukung?",
-                a: "Semua jenis file bisa dibaca. Teks & gambar dikonversi ke base64. Struktur direktori dipertahankan untuk payload Vercel dan path GitHub.",
+                q: "File apa saja didukung?",
+                a: "Semua jenis. Teks & gambar → base64. Struktur direktori tetap.",
               },
             ].map((item) => (
               <FaQItem key={item.q} q={item.q} a={item.a} />
@@ -542,8 +552,7 @@ export default function DropDeployClient() {
 
       {/* ================= FOOTER ================= */}
       <footer className="border-t border-silver bg-paper-white px-6 py-10 text-center text-[14px] text-slate">
-        DropDeploy — Instant Deploy dari browser. Dibangun dengan Next.js, Tailwind,
-        JSZip & react-dropzone.
+        DropDeploy — Deploy dari browser.
       </footer>
     </main>
   );

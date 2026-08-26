@@ -1,15 +1,15 @@
 import { Rocket, Lock } from "lucide-react";
 
-/** Decorative confetti shapes — never informational, per DESIGN.md. */
+/** Confetti — decorative blobs with float animation. */
 export function Confetti() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute -top-10 -left-10 size-52 rounded-full bg-sticker-green/80" />
-      <div className="absolute top-16 right-[-60px] size-56 rounded-[40px] bg-sticker-yellow/70" />
-      <div className="absolute top-[45%] -left-16 size-40 rounded-full bg-sticker-pink/70" />
-      <div className="absolute top-[30%] -right-10 size-44 rounded-[24px] bg-periwinkle-violet/60" />
-      <div className="absolute bottom-[-40px] left-1/3 size-36 rounded-full bg-sticker-yellow/60" />
-      <div className="absolute top-1/2 right-1/4 size-24 rounded-full bg-sticker-green/60" />
+      <div className="animate-float absolute -top-10 -left-10 size-52 rounded-full bg-sticker-green/80" />
+      <div className="animate-float-alt absolute top-16 right-[-60px] size-56 rounded-[40px] bg-sticker-yellow/70" />
+      <div className="animate-float-slow absolute top-[45%] -left-16 size-40 rounded-full bg-sticker-pink/70" />
+      <div className="animate-float absolute top-[30%] -right-10 size-44 rounded-[24px] bg-periwinkle-violet/60" />
+      <div className="animate-float-alt absolute bottom-[-40px] left-1/3 size-36 rounded-full bg-sticker-yellow/60" />
+      <div className="animate-float-slow absolute top-1/2 right-1/4 size-24 rounded-full bg-sticker-green/60" />
     </div>
   );
 }
@@ -27,7 +27,7 @@ export function Logo() {
 
 export function NavPill() {
   return (
-    <nav className="sticky top-4 z-40 mx-auto mt-4 flex w-fit items-center gap-8 rounded-full bg-lavender-mist px-4 py-2 shadow-sticker">
+    <nav className="animate-fade-in sticky top-4 z-40 mx-auto mt-4 flex w-fit items-center gap-8 rounded-full bg-lavender-mist px-4 py-2 shadow-sticker">
       <Logo />
       <div className="hidden items-center gap-1 sm:flex">
         {[
