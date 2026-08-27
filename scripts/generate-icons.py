@@ -24,75 +24,78 @@ PINK = (230, 153, 217)
 GREEN = (60, 221, 140)
 
 
-def rounded_rocket(dw, d, lw):
-    """Roket runcing: gabungan elips (kapsul) + kerucut atas + fins + api."""
+def rounded_rocket(dw):
+    """Roket runcing bernuansa UI: badan hijau, jendela ungu, api kuning."""
     ox, oy = cx, cy + 20 * SS
 
-    # --- ekor api ---
-    # lidah api utama (kuning) di bawah badan
+    # --- ekor api (kuning) ---
     dw.polygon([
         (ox - 46 * SS, oy + 118 * SS),
         (ox + 46 * SS, oy + 118 * SS),
-        (ox, oy + 210 * SS),
+        (ox, oy + 215 * SS),
     ], fill=YELLOW)
-    # lidah api dalam (pink)
+    # lidah api dalam (ungu muda)
     dw.polygon([
-        (ox - 26 * SS, oy + 120 * SS),
-        (ox + 26 * SS, oy + 120 * SS),
-        (ox, oy + 175 * SS),
-    ], fill=PINK)
+        (ox - 24 * SS, oy + 120 * SS),
+        (ox + 24 * SS, oy + 120 * SS),
+        (ox, oy + 172 * SS),
+    ], fill=PERIWINKLE)
 
-    # --- badan roket: kapsul = lingkaran (jendela) + kerucut atas ---
+    # --- badan roket (hijau) ---
     body_w = 92 * SS
-    body_h = 150 * SS
-    top_y = oy - body_h + 20 * SS          # puncak kerucut
-    base_y = oy + 20 * SS                  # pertemuan kerucut & kapsul
-    bottom_y = oy + 150 * SS               # dasar kapsul
+    top_y = oy - 130 * SS          # puncak kerucut
+    base_y = oy + 20 * SS          # pertemuan kerucut & kapsul
+    bottom_y = oy + 150 * SS       # dasar kapsul
+    body_h = bottom_y - top_y
 
-    # kerucut atas (runcing), putih
+    # kerucut atas (runcing), hijau
     dw.polygon([
-        (ox, top_y),                        # puncak
+        (ox, top_y),
         (ox - body_w / 2, base_y),
         (ox + body_w / 2, base_y),
-    ], fill=WHITE)
+    ], fill=GREEN)
 
-    # kapsul bawah (elips), putih
+    # kapsul bawah (elips), hijau
     kapsul_left = ox - body_w / 2
     kapsul_top = bottom_y - body_h
     dw.pieslice(
         [kapsul_left, kapsul_top, kapsul_left + body_w, kapsul_top + 2 * body_h],
-        180, 360, fill=WHITE,
+        180, 360, fill=GREEN,
     )
-    # persegi penyambung biar mulus (bagian bawah kerucut + atas kapsul)
+    # persegi penyambung biar mulus
     dw.rectangle(
-        [kapsul_left, base_y - 4 * SS, kapsul_left + body_w, bottom_y],
-        fill=WHITE,
+        [kapsul_left, base_y - 6 * SS, kapsul_left + body_w, bottom_y],
+        fill=GREEN,
     )
 
-    # --- fins / sayap kiri & kanan (putih) ---
+    # --- fins / sayap (hijau) ---
     fin_top = base_y - 40 * SS
     fin_bot = bottom_y + 6 * SS
     dw.polygon([
         (kapsul_left, fin_top),
         (kapsul_left - 40 * SS, fin_bot),
         (kapsul_left + 10 * SS, fin_bot),
-    ], fill=WHITE)
+    ], fill=GREEN)
     dw.polygon([
         (kapsul_left + body_w, fin_top),
         (kapsul_left + body_w + 40 * SS, fin_bot),
         (kapsul_left + body_w - 10 * SS, fin_bot),
-    ], fill=WHITE)
+    ], fill=GREEN)
 
-    # --- jendela kapsul (periwinkle) ---
+    # --- jendela kapsul (ungu) ---
     win_r = 26 * SS
     dw.ellipse(
-        [ox - win_r, oy + 58 * SS - win_r, ox + win_r, oy + 58 * SS + win_r],
-        fill=PERIWINKLE, outline=WHITE, width=int(8 * SS),
+        [ox - win_r, oy + 62 * SS - win_r, ox + win_r, oy + 62 * SS + win_r],
+        fill=PERIWINKLE, outline=WHITE, width=int(7 * SS),
     )
 
-    # --- highlight kecil di kerucut ---
+    # --- stripe hijau muda di badan (aksen vertikal) ---
+    strip_x = kapsul_left + body_w / 2
+    dw.rectangle([strip_x - 2 * SS, top_y, strip_x + 2 * SS, bottom_y], fill=SOFT_PERI)
+
+    # --- highlight / sinar putih tipis di sisi kiri kerucut ---
     dw.ellipse(
-        [ox - 24 * SS, top_y + 26 * SS, ox - 4 * SS, top_y + 46 * SS],
+        [ox - 26 * SS, top_y + 24 * SS, ox - 6 * SS, top_y + 42 * SS],
         fill=WHITE,
     )
 
@@ -112,7 +115,7 @@ def make_icon(size):
     dw.ellipse([cx - R, cy - R, cx + R, cy + R], fill=BLACK)
 
     # --- roket ---
-    rounded_rocket(dw, S, S)
+    rounded_rocket(dw)
 
     # --- shrink to target ---
     return img.resize((size, size), Image.LANCZOS)
