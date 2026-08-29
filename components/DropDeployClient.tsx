@@ -386,8 +386,8 @@ export default function DropDeployClient() {
             {/* Install Aplikasi (PWA) */}
             <InstallApp variant="card" />
 
-            {/* Repo / project name */}
-            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
+            {/* Nama Projek */}
+            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
                 <FolderArchive size={18} className="sm:size-5" /> Nama Projek
               </h3>
