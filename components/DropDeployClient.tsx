@@ -269,7 +269,7 @@ export default function DropDeployClient() {
       <section id="deploy" className="reveal relative mx-auto max-w-[1200px] scroll-mt-20 px-6 pb-24">
         <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
           {/* ---- Left: connection panel ---- */}
-          <aside className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+          <aside className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
             {/* GitHub auth card */}
             <div className="card-lift reveal rounded-[24px] bg-lavender-mist p-5 sm:p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
@@ -387,7 +387,7 @@ export default function DropDeployClient() {
             <InstallApp variant="card" />
 
             {/* Nama Projek */}
-            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6">
+            <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
               <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
                 <FolderArchive size={18} className="sm:size-5" /> Nama Projek
               </h3>

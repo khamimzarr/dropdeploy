@@ -188,7 +188,7 @@ export function InstallApp({
   return (
     <>
       <div
-        className={`card-lift reveal delay-100 rounded-[24px] p-5 sm:p-6 ${
+        className={`card-lift reveal delay-100 rounded-[24px] p-5 sm:p-6 sm:col-span-2 ${
           state === "installed" ? "bg-mint-cream" : "bg-lavender-mist"
         }`}
       >
