@@ -387,7 +387,7 @@ export default function DropDeployClient() {
             <InstallApp variant="card" />
 
             {/* Nama Projek */}
-            <div className="card-lift reveal delay-200 flex flex-col rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
+            <div className="card-lift reveal delay-200 flex w-full flex-col rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2">
               <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
                 <FolderArchive size={18} className="sm:size-5" /> Nama Projek
               </h3>
