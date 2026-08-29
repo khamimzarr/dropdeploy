@@ -1,4 +1,5 @@
 import { Rocket, Lock } from "lucide-react";
+import type { ReactNode } from "react";
 
 /** Confetti — decorative blobs with float + drift + scale pulse. */
 export function Confetti() {
@@ -27,7 +28,7 @@ export function Logo() {
   );
 }
 
-export function NavPill() {
+export function NavPill({ installSlot }: { installSlot?: ReactNode }) {
   return (
     <nav className="animate-fade-in sticky top-4 z-40 mx-auto mt-4 flex w-fit items-center gap-6 rounded-full bg-lavender-mist px-5 py-2.5 shadow-sticker backdrop-blur-sm">
       <Logo />
@@ -45,6 +46,7 @@ export function NavPill() {
             {l.label}
           </a>
         ))}
+        {installSlot && <span className="ml-1">{installSlot}</span>}
       </div>
     </nav>
   );

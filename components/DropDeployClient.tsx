@@ -20,6 +20,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Confetti, NavPill } from "./ui";
+import { InstallApp } from "./InstallApp";
 import { readZip, nameFromZip, type ZipEntry } from "@/lib/deploy";
 import { deployToVercel } from "@/lib/vercel";
 import { publishToGitHub } from "@/lib/github";
@@ -246,7 +247,7 @@ export default function DropDeployClient() {
     <main className="relative min-h-screen overflow-x-hidden bg-paper-white text-carbon">
       <Confetti />
 
-      <NavPill />
+      <NavPill installSlot={<InstallApp variant="nav" />} />
 
       {/* ================= HERO ================= */}
       <section className="relative mx-auto flex max-w-[1200px] flex-col items-center px-6 pb-16 pt-20 text-center">
@@ -381,6 +382,9 @@ export default function DropDeployClient() {
                 </a>
               </div>
             </div>
+
+            {/* Install Aplikasi (PWA) */}
+            <InstallApp variant="card" />
 
             {/* Repo / project name */}
             <div className="card-lift reveal delay-200 rounded-[24px] bg-mint-cream p-5 sm:p-6 sm:col-span-2 lg:col-span-1">
