@@ -269,7 +269,7 @@ export default function DropDeployClient() {
       <section id="deploy" className="reveal relative mx-auto max-w-[1200px] scroll-mt-20 px-6 pb-24">
         <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
           {/* ---- Left: connection panel ---- */}
-          <aside className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:items-start lg:flex lg:flex-col">
+          <aside className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
             {/* GitHub auth card */}
             <div className="card-lift reveal rounded-[24px] bg-lavender-mist p-5 sm:p-6">
               <h3 className="mb-1 flex items-center gap-2 text-[17px] font-medium sm:text-[20px]">
