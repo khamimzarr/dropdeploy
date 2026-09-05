@@ -9,10 +9,12 @@ Instant Deploy — seret & lepas file `.zip`, langsung online di **Vercel** dan 
 ## Fitur
 
 - ⬇️ **Drag & Drop `.zip`** — react-dropzone + JSZip ekstrak isi arsip di memori browser.
+- ⚙️ **Real-time Progress** — animasi roda gigi memantau persentase ekstraksi *client-side*.
 - 🇻 **Instant Deploy Vercel** — `POST api.vercel.com/v13/deployments` langsung dari client, pakai token BYOK di `localStorage`.
 - 🐙 **Publish GitHub** — buat repo + commit file ke akun pengguna lewat OAuth NextAuth (BYOK).
 - 🔒 **BYOK sepenuhnya** — token Vercel disimpan lokal, tidak pernah dikirim ke backend DropDeploy.
-- 🎨 UI mengikuti **DESIGN.md** (pill nav, sticker button 9999px + shadow dua-lapis, confetti blobs, tinted cards, dark band, periwinkle FAQ).
+- 📱 **PWA Support** — bisa diinstal sebagai native app mandiri langsung dari browser.
+- 🎨 UI mengikuti **DESIGN.md** (layout elegan satu kolom, pill nav, sticker shadow, tinted cards).
 
 ---
 
@@ -57,7 +59,7 @@ npm run dev                  # http://localhost:3000
 4. Simpan → salin **Client ID** & **Client Secret** ke `.env.local`.
 5. Scope yang diminta aplikasi: `read:user user:email repo` (agar user bisa publish repo ke akun mereka).
 
-> Untuk produksi, ganti `localhost:3000` dengan domain ter-deploy (mis. `https://dropdeploy.vercel.app`).
+> Untuk produksi, ganti `localhost:3000` dengan domain ter-deploy (mis. `https://dropdeploy.my.id`).
 
 ### Token Vercel (bagi pengguna akhir — bukan env)
 
