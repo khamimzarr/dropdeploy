@@ -275,11 +275,13 @@ export default function DropDeployClient() {
           >
             <input {...getInputProps()} />
             
-            {!entries.length && (
+            {statusState === "reading" ? (
+              <Loader2 className="mx-auto mb-4 size-14 animate-spin text-periwinkle-violet" />
+            ) : !entries.length ? (
               <UploadCloud className="mx-auto mb-4 size-14 text-periwinkle-violet" />
-            )}
+            ) : null}
             
-            {entries.length > 0 && (
+            {entries.length > 0 && statusState !== "reading" && (
               <div className="mx-auto mb-5 flex -space-x-2 justify-center">
                 {imageEntries.length > 0 ? (
                   imageEntries.map((img, i) => (
@@ -298,13 +300,15 @@ export default function DropDeployClient() {
             )}
 
             <p className="text-[24px] font-medium text-carbon">
-              {entries.length > 0
+              {statusState === "reading"
+                ? message
+                : entries.length > 0
                 ? `${entries.length} file dari ${srcFile?.name} siap!`
                 : isDragActive
                 ? "Lepaskan file sekarang"
                 : "Seret & lepas file .zip ke sini"}
             </p>
-            {!entries.length && (
+            {!entries.length && statusState !== "reading" && (
               <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-graphite">
                 Atau klik untuk memilih manual. Kami akan mengekstraknya otomatis di memori browser.
               </p>
