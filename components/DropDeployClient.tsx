@@ -313,139 +313,131 @@ export default function DropDeployClient() {
 
           {/* Configuration and Actions appear ONLY after drop */}
           {entries.length > 0 && (
-            <div className="mt-8 animate-fade-up grid gap-8 lg:grid-cols-[340px_1fr]">
-              <aside className="flex flex-col gap-4">
-                {!isReady ? (
-                  <div className="flex flex-col gap-4 animate-fade-up">
-                    <h3 className="text-[18px] font-medium mb-1">Siapkan Akses</h3>
-                    
-                    {/* GitHub auth card */}
-                    <div className="card-lift rounded-[24px] bg-lavender-mist p-5">
-                      <h3 className="mb-1 flex items-center gap-2 text-[16px] font-medium">
-                        <Github size={16} /> Akun GitHub
-                      </h3>
-                      {isLoggedIn ? (
-                        <div className="mt-3 flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-2.5 shadow-sticker-sm">
-                          <div className="flex min-w-0 items-center gap-2">
-                            {session?.user?.image ? (
-                              <img src={session.user.image} alt="avatar" className="size-6 shrink-0 rounded-full" />
-                            ) : (
-                              <Github size={14} className="shrink-0" />
-                            )}
-                            <span className="truncate text-[13px] font-medium">
-                              {session?.user?.name || "Terhubung"}
-                            </span>
-                          </div>
-                          <button onClick={() => signOut()} className="shrink-0 text-[11px] underline text-graphite hover:text-carbon">Keluar</button>
+            <div className="mt-8 mx-auto animate-fade-up flex max-w-[540px] flex-col gap-5">
+              
+              {!isReady ? (
+                <div className="flex flex-col gap-4 animate-fade-up">
+                  <h3 className="text-[18px] font-medium mb-1 text-left">Siapkan Akses</h3>
+                  
+                  {/* GitHub auth card */}
+                  <div className="card-lift rounded-[24px] bg-lavender-mist p-5 text-left">
+                    <h3 className="mb-1 flex items-center gap-2 text-[16px] font-medium">
+                      <Github size={16} /> Akun GitHub
+                    </h3>
+                    {isLoggedIn ? (
+                      <div className="mt-3 flex items-center justify-between gap-3 rounded-[16px] bg-paper-white p-2.5 shadow-sticker-sm">
+                        <div className="flex min-w-0 items-center gap-2">
+                          {session?.user?.image ? (
+                            <img src={session.user.image} alt="avatar" className="size-6 shrink-0 rounded-full" />
+                          ) : (
+                            <Github size={14} className="shrink-0" />
+                          )}
+                          <span className="truncate text-[13px] font-medium">
+                            {session?.user?.name || "Terhubung"}
+                          </span>
                         </div>
-                      ) : (
-                        <div className="mt-3">
-                          <button onClick={() => signIn("github")} className="flex w-full items-center justify-center gap-2 rounded-full bg-carbon px-4 py-2.5 text-[14px] font-medium text-paper-white shadow-sticker transition hover:opacity-90">
-                            <Github size={16} /> Login GitHub
-                          </button>
-                        </div>
+                        <button onClick={() => signOut()} className="shrink-0 text-[11px] underline text-graphite hover:text-carbon">Keluar</button>
+                      </div>
+                    ) : (
+                      <div className="mt-3">
+                        <button onClick={() => signIn("github")} className="flex w-full items-center justify-center gap-2 rounded-full bg-carbon px-4 py-2.5 text-[14px] font-medium text-paper-white shadow-sticker transition hover:opacity-90">
+                          <Github size={16} /> Login GitHub
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Vercel Token */}
+                  <div className="card-lift rounded-[24px] bg-butter-cream p-5 text-left">
+                    <h3 className="mb-1 flex items-center gap-2 text-[16px] font-medium">
+                      <KeyRound size={16} /> Vercel Token
+                    </h3>
+                    <div className="mt-3 flex flex-col gap-2">
+                      <div className={`flex items-center gap-2 rounded-[16px] bg-paper-white px-3 py-2 shadow-sticker-sm ${tokenState === "valid" ? "ring-2 ring-sticker-green" : tokenState === "invalid" ? "ring-2 ring-sticker-pink" : ""}`}>
+                        <Lock size={14} className="shrink-0 text-graphite" />
+                        <input type="password" value={vercelToken} onChange={(e) => saveToken(e.target.value)} placeholder="********" className="w-full bg-transparent font-geist-mono text-[13px] outline-none placeholder:text-ash" autoComplete="off" />
+                        {tokenState === "checking" && <Loader2 size={14} className="shrink-0 animate-spin text-graphite" />}
+                        {tokenState === "valid" && <CheckCircle2 size={14} className="shrink-0 text-sticker-green" />}
+                        {tokenState === "invalid" && <XCircle size={14} className="shrink-0 text-sticker-pink" />}
+                      </div>
+                      <a href="https://vercel.com/account/tokens" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] text-graphite underline decoration-dotted hover:text-carbon">
+                        Klik untuk generate tokens <ExternalLink size={10} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="card-lift animate-fade-up rounded-[24px] bg-mint-cream p-5 border border-sticker-green/20 shadow-sticker-sm text-left">
+                  <h3 className="mb-3 flex items-center gap-2 text-[16px] font-medium text-sticker-green">
+                    <CheckCircle2 size={18} /> Akses Siap
+                  </h3>
+                  <div className="flex flex-col gap-2.5 text-[13px] text-carbon">
+                    <span className="flex items-center gap-2"><Github size={15} className="text-graphite"/> {session?.user?.name || "GitHub terhubung"}</span>
+                    <span className="flex items-center gap-2"><KeyRound size={15} className="text-graphite"/> Vercel Token valid</span>
+                  </div>
+                  <button onClick={() => { window.localStorage.removeItem(STORAGE_KEY); setVercelToken(""); setTokenState("empty"); }} className="mt-4 text-[12px] underline text-graphite hover:text-carbon">Atur ulang akses</button>
+                </div>
+              )}
+
+              {/* Project Name */}
+              <div className="card-lift rounded-[24px] bg-lavender-mist p-6 shadow-sticker-sm text-left animate-fade-up delay-100">
+                <h3 className="mb-1 flex items-center gap-2 text-[18px] font-medium">
+                  <FolderArchive size={18} /> Nama Projek
+                </h3>
+                <p className="mb-4 text-[14px] text-slate">Nama repo GitHub & URL Vercel.</p>
+                <input
+                  type="text"
+                  value={repoName}
+                  onChange={(e) => setRepoName(e.target.value)}
+                  placeholder="nama-proyek"
+                  className="w-full rounded-full border border-carbon bg-paper-white px-4 py-3 font-geist-mono text-[15px] outline-none placeholder:text-ash focus:shadow-sticker transition-shadow"
+                />
+              </div>
+
+              {/* Status / Results Strip */}
+              {(statusState !== "idle" || result) && (
+                <div className={`animate-scale-in rounded-[24px] p-6 ${statusColor} shadow-sticker-sm transition text-left`}>
+                  {(statusState === "deploying" || statusState === "reading") && (
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="size-5 animate-spin text-carbon" />
+                      <span className="text-[16px] font-medium">{message}</span>
+                    </div>
+                  )}
+                  {statusState === "success" && (
+                    <div className="flex items-center gap-3 text-carbon">
+                      <CheckCircle2 className="size-5 text-sticker-green" />
+                      <span className="text-[16px] font-medium">{message}</span>
+                    </div>
+                  )}
+                  {statusState === "error" && (
+                    <div className="flex items-center gap-3 text-carbon">
+                      <XCircle className="size-5 text-sticker-pink" />
+                      <span className="text-[16px] font-medium">{message}</span>
+                    </div>
+                  )}
+
+                  {result && (
+                    <div className="mt-5 grid gap-3 sm:grid-cols-1">
+                      {result.vercelUrl && (
+                        <ResultRow label="Vercel" url={result.vercelUrl} method="vercel" copied={copied} onCopy={handleCopy} />
+                      )}
+                      {result.githubUrl && (
+                        <ResultRow label="GitHub" url={result.githubUrl.replace(/^https?:\/\//, "")} method="github" copied={copied} onCopy={handleCopy} />
                       )}
                     </div>
-
-                    {/* Vercel Token */}
-                    <div className="card-lift rounded-[24px] bg-butter-cream p-5">
-                      <h3 className="mb-1 flex items-center gap-2 text-[16px] font-medium">
-                        <KeyRound size={16} /> Vercel Token
-                      </h3>
-                      <div className="mt-3 flex flex-col gap-2">
-                        <div className={`flex items-center gap-2 rounded-[16px] bg-paper-white px-3 py-2 shadow-sticker-sm ${tokenState === "valid" ? "ring-2 ring-sticker-green" : tokenState === "invalid" ? "ring-2 ring-sticker-pink" : ""}`}>
-                          <Lock size={14} className="shrink-0 text-graphite" />
-                          <input type="password" value={vercelToken} onChange={(e) => saveToken(e.target.value)} placeholder="********" className="w-full bg-transparent font-geist-mono text-[13px] outline-none placeholder:text-ash" autoComplete="off" />
-                          {tokenState === "checking" && <Loader2 size={14} className="shrink-0 animate-spin text-graphite" />}
-                          {tokenState === "valid" && <CheckCircle2 size={14} className="shrink-0 text-sticker-green" />}
-                          {tokenState === "invalid" && <XCircle size={14} className="shrink-0 text-sticker-pink" />}
-                        </div>
-                        <a href="https://vercel.com/account/tokens" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] text-graphite underline decoration-dotted hover:text-carbon">
-                          Klik untuk generate tokens <ExternalLink size={10} />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="card-lift animate-fade-up rounded-[24px] bg-mint-cream p-5 border border-sticker-green/20 shadow-sticker-sm">
-                    <h3 className="mb-3 flex items-center gap-2 text-[16px] font-medium text-sticker-green">
-                      <CheckCircle2 size={18} /> Akses Siap
-                    </h3>
-                    <div className="flex flex-col gap-2.5 text-[13px] text-carbon">
-                      <span className="flex items-center gap-2"><Github size={15} className="text-graphite"/> {session?.user?.name || "GitHub terhubung"}</span>
-                      <span className="flex items-center gap-2"><KeyRound size={15} className="text-graphite"/> Vercel Token valid</span>
-                    </div>
-                    <button onClick={() => { window.localStorage.removeItem(STORAGE_KEY); setVercelToken(""); setTokenState("empty"); }} className="mt-4 text-[12px] underline text-graphite hover:text-carbon">Atur ulang akses</button>
-                  </div>
-                )}
-                
-                {/* Install App hidden inside desktop side, maybe keep it minimal */}
-                <div className="mt-2">
-                  <InstallApp variant="card" />
+                  )}
                 </div>
-              </aside>
+              )}
 
-              <div className="flex flex-col gap-5 animate-fade-up">
-                {/* Project Name */}
-                <div className="card-lift rounded-[24px] bg-lavender-mist p-6 shadow-sticker-sm">
-                  <h3 className="mb-1 flex items-center gap-2 text-[18px] font-medium">
-                    <FolderArchive size={18} /> Nama Projek
-                  </h3>
-                  <p className="mb-4 text-[14px] text-slate">Nama repo GitHub & URL Vercel.</p>
-                  <input
-                    type="text"
-                    value={repoName}
-                    onChange={(e) => setRepoName(e.target.value)}
-                    placeholder="nama-proyek"
-                    className="w-full rounded-full border border-carbon bg-paper-white px-4 py-3 font-geist-mono text-[15px] outline-none placeholder:text-ash focus:shadow-sticker transition-shadow"
-                  />
-                </div>
-
-                {/* Status / Results Strip */}
-                {(statusState !== "idle" || result) && (
-                  <div className={`animate-scale-in rounded-[24px] p-6 ${statusColor} shadow-sticker-sm transition`}>
-                    {(statusState === "deploying" || statusState === "reading") && (
-                      <div className="flex items-center gap-3">
-                        <Loader2 className="size-5 animate-spin text-carbon" />
-                        <span className="text-[16px] font-medium">{message}</span>
-                      </div>
-                    )}
-                    {statusState === "success" && (
-                      <div className="flex items-center gap-3 text-carbon">
-                        <CheckCircle2 className="size-5 text-sticker-green" />
-                        <span className="text-[16px] font-medium">{message}</span>
-                      </div>
-                    )}
-                    {statusState === "error" && (
-                      <div className="flex items-center gap-3 text-carbon">
-                        <XCircle className="size-5 text-sticker-pink" />
-                        <span className="text-[16px] font-medium">{message}</span>
-                      </div>
-                    )}
-
-                    {result && (
-                      <div className="mt-5 grid gap-3 sm:grid-cols-1">
-                        {result.vercelUrl && (
-                          <ResultRow label="Vercel" url={result.vercelUrl} method="vercel" copied={copied} onCopy={handleCopy} />
-                        )}
-                        {result.githubUrl && (
-                          <ResultRow label="GitHub" url={result.githubUrl.replace(/^https?:\/\//, "")} method="github" copied={copied} onCopy={handleCopy} />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Deploy Button */}
-                <button
-                  onClick={handleDeployAll}
-                  disabled={!isReady || statusState === "deploying"}
-                  className="btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-carbon px-6 py-4 text-[18px] font-medium text-paper-white shadow-sticker transition enabled:hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] disabled:cursor-not-allowed disabled:opacity-40 mt-auto"
-                >
-                  {statusState === "deploying" ? <Loader2 size={20} className="animate-spin" /> : <Rocket size={20} className="group-hover:animate-[iconBounce_0.6s_ease]" />}
-                  Deploy Sekarang
-                </button>
-              </div>
+              {/* Deploy Button */}
+              <button
+                onClick={handleDeployAll}
+                disabled={!isReady || statusState === "deploying"}
+                className="btn-shine flex w-full items-center justify-center gap-2 rounded-full bg-carbon px-6 py-4 text-[18px] font-medium text-paper-white shadow-sticker transition enabled:hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] disabled:cursor-not-allowed disabled:opacity-40 animate-fade-up delay-200"
+              >
+                {statusState === "deploying" ? <Loader2 size={20} className="animate-spin" /> : <Rocket size={20} className="group-hover:animate-[iconBounce_0.6s_ease]" />}
+                Deploy Sekarang
+              </button>
             </div>
           )}
         </div>
