@@ -14,15 +14,17 @@ export interface ZipEntry {
  * Read a .zip File in the browser, convert every entry to a base64
  * buffer. ALL processing happens on the client — never touches a backend.
  */
-export async function readZip(file: File): Promise<ZipEntry[]> {
+export async function readZip(file: File, onProgress?: (p: number) => void): Promise<ZipEntry[]> {
   const zip = await JSZip.loadAsync(file);
   const entries: ZipEntry[] = [];
   const names = Object.keys(zip.files);
 
-  for (const name of names) {
-    const zipEntry = zip.files[name];
-    if (zipEntry.dir) continue;
+  const fileNames = names.filter(n => !zip.files[n].dir);
+  const total = fileNames.length;
+  let done = 0;
 
+  for (const name of fileNames) {
+    const zipEntry = zip.files[name];
     const item = await zipEntry.async("uint8array");
     let base64 = "";
     for (let i = 0; i < item.length; i += 0x8000) {
@@ -32,6 +34,8 @@ export async function readZip(file: File): Promise<ZipEntry[]> {
       path: name.replace(/^\/+/, ""),
       data: btoa(base64),
     });
+    done++;
+    if (onProgress) onProgress(Math.round((done / total) * 100));
   }
 
   return entries;

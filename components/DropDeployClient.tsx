@@ -18,6 +18,7 @@ import {
   Lock,
   Sparkles,
   ExternalLink,
+  Settings,
 } from "lucide-react";
 import { Confetti, NavPill } from "./ui";
 import { InstallApp } from "./InstallApp";
@@ -45,6 +46,7 @@ export default function DropDeployClient() {
   const [repoName, setRepoName] = useState("");
   const [statusState, setStatusState] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const [progress, setProgress] = useState(0);
   const [entries, setEntries] = useState<ZipEntry[]>([]);
   const [srcFile, setSrcFile] = useState<File | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -113,11 +115,12 @@ export default function DropDeployClient() {
     const file = accepted[0];
     if (!file) return;
     setStatusState("reading");
+    setProgress(0);
     setMessage("Membongkar muatan...");
     setResult(null);
     setSrcFile(file);
     try {
-      const files = await readZip(file);
+      const files = await readZip(file, (p) => setProgress(p));
       if (!files.length) throw new Error("ZIP kosong atau tidak valid.");
       setEntries(files);
       // default repo name from zip
@@ -276,7 +279,10 @@ export default function DropDeployClient() {
             <input {...getInputProps()} />
             
             {statusState === "reading" ? (
-              <Loader2 className="mx-auto mb-4 size-14 animate-spin text-periwinkle-violet" />
+              <div className="mx-auto mb-4 flex flex-col items-center justify-center">
+                <Settings className="size-14 animate-[spin_2s_linear_infinite] text-periwinkle-violet" />
+                <span className="mt-3 text-[18px] font-bold text-carbon">{progress}%</span>
+              </div>
             ) : !entries.length ? (
               <UploadCloud className="mx-auto mb-4 size-14 text-periwinkle-violet" />
             ) : null}
